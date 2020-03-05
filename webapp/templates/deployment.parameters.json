@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {	
+		"webAppName": {
+			"value": "auto-update"
+		  },
+		  "sku": {
+			"value": "auto-update"
+		  },
+		  "appServicePlanName": {
+			"value": "auto-update"
+		  },
+		  "tags": {
+			"value": "auto-update"
+		  },
+		  "skuCode": {
+			"value": "auto-update"
+		  },
+		  "appSettings": {
+			"value": "auto-update"
+		  },
+		  "slots":{
+			  "value": "auto-update"
+		  }
+     }
+  }

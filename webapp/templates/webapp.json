@@ -1,0 +1,110 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "webAppName": {
+        "type": "string",
+        "minLength": 2
+      },
+      "sku":{
+        "type": "string"
+      },
+      "location": {
+        "type": "string",
+        "defaultValue": "[resourceGroup().location]"
+      },
+      "appServicePlanName": {
+        "type": "string"
+      },
+      "tags": {
+        "type": "object"
+      },
+      "skuCode": {
+        "type": "string"
+      },
+      "AppSettings": {
+        "type": "object"
+      },
+      "slots":{
+        "type": "array"
+      }
+    },
+    "variables": {
+    },
+    "resources": [
+      {
+        "apiVersion": "2018-02-01",
+        "type": "Microsoft.Web/serverfarms",
+        "kind": "app",
+        "name": "[parameters('appServicePlanName')]",
+        "location": "[parameters('location')]",
+        "properties": {
+          "name": "[parameters('appServicePlanName')]"
+        },
+        "dependsOn": [],
+        "sku": {
+            "Tier": "[parameters('sku')]",
+            "Name": "[parameters('skuCode')]"
+        }
+      },
+      {
+        "apiVersion": "2019-08-01",
+        "type": "Microsoft.Web/sites",
+        "kind": "app",
+        "name": "[parameters('webAppName')]",
+        "location": "[parameters('location')]",
+        "tags": "[parameters('tags')]",
+        "identity": {
+          "type": "SystemAssigned"
+        },
+        "properties": {
+          "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
+            "httpsOnly": true,
+            "siteConfig": {
+                "appSettings": "[parameters('AppSettings')]",
+                "http20Enabled": true,
+                "autoHealEnabled": true,
+                "netFrameworkVersion": "v4.6",
+                "use32BitWorkerProcess": false,
+                "webSocketsEnabled": false,
+                "alwaysOn": true,
+                "requestTracingEnabled": true,
+                "httpLoggingEnabled": true,
+                "detailedErrorLoggingEnabled": true
+            }
+        },
+        "dependsOn": [
+          "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+        ]
+      },
+      {
+        "apiVersion": "2019-08-01",
+        "type": "Microsoft.Web/sites/slots",
+        "name": "[concat(parameters('webAppName'), '/', parameters('slots')[copyIndex()])]",
+        "kind": "app",
+        "location": "[parameters('location')]",
+        "comments": "This specifies the web app slots.",
+        "tags": "[parameters('tags')]",
+        "properties": {
+          "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+        },
+        "dependsOn": [
+          "[resourceId('Microsoft.Web/Sites', parameters('webAppName'))]"
+        ],
+        "copy": {
+          "name": "slots",
+          "count": "[length(parameters('slots'))]"
+        }
+      }
+    ],
+    "outputs": {
+        "principalId": {
+          "type": "string",
+          "value": "[reference(resourceId('Microsoft.Web/sites', parameters('webAppName')), '2018-11-01', 'Full').identity.principalId]"
+        },
+        "webAppName": {
+          "type": "string",
+          "value": "[parameters('webAppName')]"
+        }
+      }
+  }

@@ -1,0 +1,38 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {	
+		"keyVault": {
+            "value": {
+                "Name": "auto-update",
+                "tags": {
+                  "resourceGroupName": "auto-update",
+                  "appVersion": "auto-update",
+                  "ApplicationOwner": "NA",
+                  "ServiceName": "NA",
+                  "DeployedBy": "auto-update",
+                  "BusinessUnit": "NA",
+                  "ProjectOwner": "NA",
+                  "Application": "NA",
+                  "Version": "1.0.0.0",
+                  "Description": "NA",
+                  "Department": "Infra-Automation",
+                  "Environment": "NA",
+                  "ProjectName": "NA",
+                  "CostCenter": "NA",
+                  "DataProfile": "NA"
+                },
+                "sku": "Standard",
+                "skuCode" : "S1",
+                "accessPolicies":{
+                    "value":[
+                        {
+                            "name": "DataBaseConnectionString",
+                            "value": "Temp"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
